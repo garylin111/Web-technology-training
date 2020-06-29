@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import csv
 
 #爬取的网页的网址
-url = 'https://www.bilibili.com/ranking/all/0/0/1'
+url = 'https://www.bilibili.com/ranking/all/1/0/1'
 
 #发起网络请求
 response = requests.get(url)
