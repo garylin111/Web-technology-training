@@ -1,1 +1,1 @@
-# -Web-technology-training
+# Web-technology-training
