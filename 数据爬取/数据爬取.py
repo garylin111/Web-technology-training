@@ -33,7 +33,7 @@ for i in range(13):
 
             @staticmethod
             def csv_title(self):
-                return ['排名', '标题', '播放量', '讨论数', '得分', '封面链接', 'UP的ID', '视频av号']
+                return ['排名', '标题', '播放量', '讨论数', '得分', 'UP的ID', '视频av号']
 
         items = soup.findAll('li', {'class': 'rank-item'})
         videos = []  # 保存提取出来的Video列表
