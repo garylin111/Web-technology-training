@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>testPage</title>
+    <link rel="stylesheet" href="boxCSS.css" type="text/css">
+</head>
+<body>
+    <div class="top">
+        <div class="top_content">
+            <ul class="nav">
+                <li class="nav"><a href="#" onclick="fun1(this)">导航1</a></li>
+                <li class="nav"><a href="#">导航2</a></li>
+                <li class="nav"><a href="#">导航3</a></li>
+                <li class="nav"><a href="#">导航4</a></li>
+            </ul>
+            <script>
+                function fun1(a){
+                    b=Math.round(100*Math.random());
+                    a.innerHTML=b;
+                    alert("即将为你打开第"+b+"个视频(未实装)")
+                    window.location.href="http://www.baidu.com" ; 
+                }
+            </script>
+        </div>
+    </div>
+    <div class="body">
+        <div class="body_img">
+            <img src="picture.jpg" alt="" style="transform: scale(1.2);">
+        </div>
+        <div class="body_gap"></div>
+        <div class="body_content"></div>
+    </div>
+    <div class="footing">
+        <div class="footing_content"></div>
+        <div class="footing_subnav"></div>
+    </div>
+</body>
+
+</html>
