@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Python代码展示</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom fonts for this template -->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
+    type='text/css'>
+  <link
+    href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+    rel='stylesheet' type='text/css'>
+
+  <!-- Custom styles for this template -->
+  <link href="css/clean-blog.min.css" rel="stylesheet">
+  <script src="js/myFun.js"></script>
+
+</head>
+
+<body>
+  <div style="background-color: rgb(115, 199, 255); height: 62px;">
+     <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand" href="http://45.76.64.38">Bilibili Data</a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+        data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+        aria-label="Toggle navigation">
+        菜单
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://www.bilibili.com/"target="_blank">哔哩哔哩动画</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="dataPre.html">数据展示</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="randVideo()">随机来个视频吧！</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="ourPage()">组员个人网页</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+    <!-- Post Content -->
+    <article>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <h2 class="section-heading">部分代码展示</h2>
+            <hr>
+            <h5>爬虫程序</h5>
+            <p>基于pyhton下bs4、BeautifulSoup、fake_useragent与csv包</p>
+            <div style="border:1px solid #CCC"></div>
+            <pre>import requests
+              import requests
+              import fake_useragent
+              from requests import get
+              from fake_useragent import UserAgent
+              from bs4 import BeautifulSoup
+              from os.path import exists
+              from os import mkdir
+              import csv
+              
+              rid_dict = {  # 创建字典，方便调用
+                  "全站": 0,
+                  "动画": 1,
+                  "国创相关": 168,
+                  "音乐": 3,
+                  "舞蹈": 129,
+                  "游戏": 4,
+                  "知识": 36,
+                  "数码": 188,
+                  "生活": 160,
+                  "鬼畜": 119,
+                  "时尚": 155,
+                  "娱乐": 5,
+                  "影视": 181}
+              time_dict = {
+                  "日排行": 1,
+                  "周排行": 7,
+                  "月排行": 30}
+              
+              
+              def dict_get(dict_, objkey):  # 从字典中取值，返回key对应的value
+                  if isinstance(dict_, dict):
+                      for key, value in dict_.items():
+                          if key == objkey:
+                              return value
+                          else:  # 如果value是dict类型，则进行迭代
+                              if isinstance(value, dict):
+                                  ret = dict_get(value, objkey)
+                                  if ret is not None:
+                                      return ret
+                              elif isinstance(value, list):  # 如果value是list类型，则依次进行迭代
+                                  for i in range(len(value)):
+                                      ret = dict_get(value[i], objkey)
+                                      if ret is not None:
+                                          return ret
+                      return None  # 找不到指定的key，返回None
+                  else:
+                      return None
+              
+              
+              def url_get(url, mode=None, timeout=20):  # 获取网页内容
+                  retry_count = 0  # 尝试的次数
+                  try:
+                      if mode is None:
+                          return get(url=url, headers={"User-Agent": UserAgent().random}, timeout=timeout)
+                      elif mode == "json":
+                          return get(url=url, headers={"User-Agent": UserAgent().random}, timeout=timeout).json()
+                      elif mode == "content":
+                          return get(url=url, headers={"User-Agent": UserAgent().random}, timeout=timeout).content
+                      elif mode == "text":
+                          return get(url=url, headers={"User-Agent": UserAgent().random}, timeout=timeout).text
+                      elif mode == "code":
+                          return get(url=url, headers={"User-Agent": UserAgent().random}, timeout=timeout).status_code
+                      else:
+                          raise ValueError("所给Mode错误，应是：None/json/content/text/code")
+                  except Exception:
+                      if retry_count > 3:
+                          raise Exception("已达最大尝试次数")
+                      else:
+                          retry_count += 1
+              
+              
+              
+              
+              rid_dict = {"全站": 0, "动画": 1, "国创相关": 168, "音乐": 3, "舞蹈": 129, "游戏": 4, "知识": 36, "数码": 188, "生活": 160, "鬼畜": 119, "时尚": 155, "娱乐": 5, "影视": 181}
+              rid1_dict = {0: "全站", 1: "动画", 2: "国创相关", 3: "音乐", 4: "舞蹈", 5: "游戏", 6: "知识", 7: "数码", 8: "生活", 9: "鬼畜", 10: "时尚", 11: "娱乐", 12: "影视" }
+              day_dict = {"日排行": 1, "周排行": 7, "月排行": 30}
+              day1_dict = {0: "日排行", 1: "周排行", 2: "月排行"}
+              
+              def rank_crawler():
+                  # 保存目录
+                  save_path = "data"
+                  # 如果目录不存在则创建目录
+                  if not exists(save_path):
+                      mkdir(save_path)
+                  for x in range(13):
+                      for j in range(3):
+                          rid1 = rid1_dict[x]
+                          rid = rid_dict[rid1]
+                          day1 = day1_dict[j]
+                          day = day_dict[day1]
+                          url = "https://api.bilibili.com/x/web-interface/ranking?rid={}&day={}".format(rid, day)  # 拼接url
+                          res = url_get(url=url, mode="json")
+                          rank_list = dict_get(res, "list")
+              
+                          class Video:
+                              def __init__(self, aid, author, coins, play, pts, title, video_review, reprint):
+                                  self.bvid = bvid
+                                  self.title = title
+                                  self.author = author
+                                  self.coins = coins
+                                  self.play = play
+                                  self.pts = pts
+                                  self.video_review = video_review
+                                  #self.pic = pic
+                                  self.reprint = reprint
+              
+                              def to_csv(self):
+                                  return [self.bvid, self.author, self.coins, self.play, self.pts, self.title, self.video_review, self.reprint]
+              
+                              @staticmethod
+                              def csv_title(self):
+                                  return ['视频bv号', 'up主', '投币数', '播放数', '综合得分', '视频标题', '视频弹幕数', '原创']
+              
+                          videos = []
+              
+                          for i in range(len(rank_list)):
+                              bvid = dict_get(rank_list[i], "bvid")  # 视频bv号
+                              author = dict_get(rank_list[i], "author")  # up主
+                              coins = dict_get(rank_list[i], "coins")  # 投币数
+                              play = dict_get(rank_list[i], "play")  # 播放数
+                              pts = dict_get(rank_list[i], "pts")  # 综合得分
+                              title = dict_get(rank_list[i], "title")  # 视频标题
+                              video_review = dict_get(rank_list[i], "video_review")  # 视频弹幕数
+                              #pic = dict_get(rank_list[i], "pic")  # 视频封面
+                              no_reprint = dict_get(rank_list[i], "no_reprint")
+                              if no_reprint == 1:  # 是否原创
+                                  reprint = "原创"
+                              else:
+                                  reprint = "转载"
+                              v = Video(bvid, author, coins, play, pts, title, video_review, reprint)
+                              videos.append(v)
+              
+                          file_name = save_path+'/{}{}top100.csv'.format(rid1, day1)  # 保存视频信息的文件
+                          with open(file_name, 'w', newline='', encoding="utf-8") as f:
+                              pen = csv.writer(f)
+                              pen.writerow(Video.csv_title(v))
+                              for v in videos:
+                                  pen.writerow(v.to_csv())
+              
+              if __name__ == "__main__":
+                  rank_crawler()
+          </pre>
+            <br><br>
+            <hr>
+            <br><br><br>
+            <h5>JavaScript</h5>
+            <p>基于JavaScript下各种库</p>
+            <div style="border:1px solid #CCC"></div>
+            <pre>
+              var chart1, chart2, chart3;
+
+              window.onresize = function () {
+                  chart1.resize();
+                  chart2.resize();
+                  chart3.resize();
+              }
+              
+              function ourPage() {
+                  alert("即将为你打开三个人才的自我介绍网页");
+                  window.open("ykh.html", 'one');
+                  window.open("cc.html", 'two');
+              }
+              
+              function dataRead(name, callback) {
+                  var dataList = new Array();
+                  //使用ajax加载csv文件的数据
+                  console.log(name);
+                  $.ajax({
+                      url: "data/" + name + ".csv",
+                      async: false, //同步请求
+                      success: function (result) {
+                          // 对csv文件的数据先以行分割
+                          var tempList = result.split("\n");
+                          // 我们在对每一行以逗号作分割
+                          for (var i = 0; i < tempList.length - 1; i++) {
+                              dataList[i] = new Array();
+                              tempAry = tempList[i + 1].split(",");
+                              for (j = 0; j < tempAry.length; j++) {
+                                  dataList[i][j] = tempAry[j];
+                              }
+                          }
+                      }
+                  });
+                  callback(dataList);
+              }
+              
+              function randVideo() {
+                  var nameList1 = ["全站", "动画", "国创相关", "音乐", "舞蹈", "游戏", "知识", "数码", "生活", "鬼畜", "时尚", "娱乐", "影视"]
+                  var nameList2 = ["月排行", "周排行", "日排行"];
+                  rankType = nameList1[Math.floor(Math.random() % 13)];
+                  rankTime = nameList2[Math.floor(Math.random() % 3)];
+                  name = rankType + rankTime + "top100";
+                  num = Math.round(100 * Math.random());
+              
+                  let dataList = dataRead(name, function (data) {
+                      bv = data[num][0];
+                      videoName = data[num][5];
+                      upName = data[num][1];
+                      alert("即将为你打开" + rankType + rankTime + "榜第" + num + "个视频!\n" + upName + "的" + "====" + videoName + "====");
+                      window.open("http://www.bilibili.com/" + bv, "_blank");
+                  });
+              }
+              
+              function myDraw(name) {
+                  rankList = [];
+                  pointsLits = [];
+                  coinsList = [];
+                  playTimesList = [];
+                  danmakuList = [];
+                  let dataList = dataRead(name, function (data) {
+                      for (i = 0; i < 100; i++) {
+                          rankList.push(String(i + 1));
+                          pointsLits.push(data[i][4]);
+                          playTimesList.push(data[i][3]);
+                          coinsList.push(data[i][2]);
+                          danmakuList.push(data[i][6]);
+                      }
+                      if (chart1 != null && chart1 != "" && chart1 != undefined) {
+                          chart1.dispose(); //销毁
+                      }
+                      if (chart2 != null && chart2 != "" && chart2 != undefined) {
+                          chart2.dispose(); //销毁
+                      }
+                      chart1 = echarts.init(document.getElementById('main1'), 'purple-passion');
+                      chart2 = echarts.init(document.getElementById('main2'), 'purple-passion');
+              
+                      var option1 = {
+                          legend: {
+                              top: '10%'
+                          },
+                          title: {
+                              subtext: "    " + name,
+                              x: 'left'
+                          },
+                          subtextStyle: {
+                              fontSize: 20
+                          },
+                          tooltip: {
+                              trigger: 'axis', //按轴选定
+                              showContent: true
+                          },
+                          dataset: {
+                              source: [
+                                  ['排名'].concat(rankList),
+                                  ['得分'].concat(pointsLits),
+                                  ['播放量'].concat(playTimesList),
+                              ]
+                          },
+                          xAxis: [{
+                              name: '排名',
+                              type: 'category',
+                              data: rankList
+                          }, {
+                              name: '排名',
+                              type: 'category',
+                              data: rankList,
+                              gridIndex: 1
+                          }],
+                          yAxis: [{
+                              gridIndex: 0
+                          }, {
+                              gridIndex: 1
+                          }],
+                          grid: [
+              
+                              {
+                                  bottom: '60%',
+                                  left: '20%',
+                                  right: 50,
+                              }, {
+                                  top: '60%',
+                                  left: '20%',
+                                  right: 50,
+                              }
+                          ],
+                          series: [{
+                                  name: '视频得分',
+                                  type: 'bar',
+                                  seriesLayoutBy: 'row',
+                                  encode: {
+                                      x: '排名',
+                                      y: '得分'
+                                  }
+                              },
+                              {
+                                  name: '视频播放量',
+                                  type: 'line',
+                                  smooth: true,
+                                  seriesLayoutBy: 'row',
+                                  encode: {
+                                      x: '排名',
+                                      y: '播放量'
+                                  },
+                                  xAxisIndex: 1,
+                                  yAxisIndex: 1
+                              },
+                          ]
+                      };
+                      var option2 = {
+                          legend: {
+                              top: '15%'
+                          },
+                          title: {
+                              subtext: "    " + name + '  硬币与弹幕',
+                              x: 'left'
+                          },
+                          subtextStyle: {
+                              fontSize: 20
+                          },
+                          tooltip: {
+                              trigger: 'axis', //按轴选定
+                              showContent: true
+                          },
+                          dataset: {
+                              source: [
+                                  ['排名'].concat(rankList),
+                                  ['硬币数'].concat(coinsList),
+                                  ['弹幕数'].concat(danmakuList)
+                              ]
+                          },
+                          xAxis: {
+                              name: '排名',
+                              type: 'category',
+                              data: rankList
+                          },
+                          yAxis: {
+                              min: 0
+                          },
+                          grid: {
+                              left: '20%',
+                              right: 50,
+                          },
+                          series: [{
+                                  name: '硬币',
+                                  type: 'line',
+                                  smooth: true,
+                                  seriesLayoutBy: 'row',
+                                  encode: {
+                                      x: '排名',
+                                      y: '硬币数'
+                                  }
+                              },
+                              {
+                                  name: '弹幕',
+                                  type: 'line',
+                                  smooth: true,
+                                  seriesLayoutBy: 'row',
+                                  encode: {
+                                      x: '排名',
+                                      y: '弹幕数'
+                                  }
+                              },
+                              {
+                                  type: 'pie',
+                                  id: 'pie',
+                                  radius: '20',
+                                  center: ['80%', '30%'],
+                                  label: {
+                                      formatter: '{b}: {@1} ({d}%)'
+                                  },
+                                  encode: {
+                                      itemName: '排名',
+                                      value: '1',
+                                      tooltip: '1'
+                                  }
+                              }
+                          ]
+                      };
+                      chart2.on('updateAxisPointer', function (event) { //监听鼠标，改变饼图值
+                          var xAxisInfo = event.axesInfo[0];
+                          if (xAxisInfo) {
+                              var dimension = xAxisInfo.value + 1;
+                              chart2.setOption({
+                                  series: {
+                                      id: 'pie',
+                                      label: {
+                                          formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+                                      },
+                                      encode: {
+                                          value: dimension,
+                                          tooltip: dimension
+                                      }
+                                  }
+                              });
+                          }
+                      });
+                      chart1.setOption(option1);
+                      chart2.setOption(option2);
+                  });
+                  sumDraw(name);
+              }
+              
+              function sumDraw(name) {
+                  docName = 'sum/' + name.substr(name.length - 9, 3) + '总和';
+                  //console.log(name);
+                  playTimesList = [];
+                  coinsList = [];
+                  nameList = []; //分区名
+                  if (chart3 != null && chart3 != "" && chart3 != undefined) {
+                      chart3.dispose(); //销毁
+                  }
+                  chart3 = echarts.init(document.getElementById('main3'), 'purple-passion');
+                  let dataList = dataRead(docName, function (data) {
+                      for (i = 1; i < 13; i++) {
+                          nameList.push(data[i][0]);
+                          playTimesList.push(data[i][1]);
+                          coinsList.push(data[i][2]);
+                      }
+                      console.log(nameList);
+                      console.log(playTimesList);
+                      console.log(coinsList);
+                      var option3 = {
+                          title: [
+                              {subtext: "    "+name.substr(name.length - 9, 3) +"分区比例",
+                              x: 'left'},
+                              {
+                                  subtext: '弹幕数',
+                                  left: '25%',
+                                  top: '65%',
+                                  textAlign: 'center'
+                              },{
+                                  subtext: '硬币数',
+                                  left: '75%',
+                                  top: '65%',
+                                  textAlign: 'center'
+                              },
+                          ],
+                          grid: 
+                              {
+                              bottom: '60%',
+                              left: '20%',
+                              right: 50,
+                          }, 
+                          tooltip: {
+                              trigger: 'item',
+                              formatter: '<br/>{c} ({d}%)'
+                          },
+                          legend: {top: '15%'},
+                          subtextStyle: {
+                              fontSize: 20
+                          },
+                          dataset: {
+                              source: [
+                                  ['分区'].concat(nameList),
+                                  ['硬币'].concat(coinsList),
+                                  ['播放量'].concat(playTimesList),
+                              ]
+                          },
+                          series: [{
+                              name: '硬币数',
+                              type: 'pie',
+                              radius: '50',
+                              center: ['25%', '50%'],
+                              seriesLayoutBy: 'row',
+                              roseType: 'radius',
+                              encode: {
+                                  itemName: '分区',
+                                  value: '硬币',
+                                  tooltip: '硬币'
+                              }
+                          }, {
+                              name: '播放量',
+                              type: 'pie',
+                              radius: '50',
+                              center: ['75%', '50%'],
+                              seriesLayoutBy: 'row',
+                              roseType: 'radius',
+                              encode: {
+                                  itemName: '分区',
+                                  value: '播放量',
+                                  tooltip: '播放量'
+                              }
+                          }]
+                      };
+                      chart3.setOption(option3);
+                  });
+              }
+          </pre>
+          <br><br><br><br>
+          <hr>
+          <h5>HTML</h5>
+          <p style="color:rgb(211, 211, 209)">你不会按F12吗?</p>
+          </div>
+        </div>
+      </div>
+    </article>
+    <hr>
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <ul class="list-inline text-center">
+              <li class="list-inline-item">
+                <a href="https://github.com/garylin111/Web-technology-training">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+            </ul>
+            <p class="copyright text-muted"><a href="http://cau.edu.cn" target="_blank">Copyright &copy; CAU CIEE
+                2020</a></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
