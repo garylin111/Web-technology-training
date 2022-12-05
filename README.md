@@ -9,7 +9,7 @@
       数据来源：B站全站排行榜界面，
       网址:https://www.bilibili.com/ranking?spm_id_from=333.851.b_7072696d61727950616765546162.3
 
-## 我们的可视化页面: http://45.76.64.38/
+## 我们的可视化页面: https://garylin111.github.io/Web-technology-training/
 
 ### 项目成员以及负责内容
 - 成员:
